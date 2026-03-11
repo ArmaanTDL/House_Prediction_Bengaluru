@@ -3,10 +3,13 @@
 A comprehensive end-to-end Machine Learning project to predict residential property prices in Bengaluru, India. This application features a robust prediction engine powered by LightGBM and CatBoost, integrated into a clean and intuitive Flask-based web interface.
 
 ![App Preview](screenshots/app_preview.png)
+<img width="1512" height="838" alt="Screenshot 2026-03-11 at 7 18 27 PM" src="https://github.com/user-attachments/assets/581c67a7-1cb0-4a8b-8f77-4517036ea90f" />
+
 
 ## 🌟 Key Features
 
-- **High-Accuracy ML Engine**: Utilizes an ensemble of LightGBM and CatBoost models for precise price estimation.
+- **High-Accuracy ML Engine**: Utilizes an ensemble of LightGBM
+ and CatBoost models for precise price estimation.
 - **Interactive Web Interface**: A modern, responsive UI built with Flask, allowing users to input property details easily.
 - **Detailed Data Analysis**: Includes exploratory data analysis (EDA) and sophisticated feature engineering blocks.
 - **Dynamic Predictions**: Real-time price calculation based on location, area type, BHK, and square footage.
