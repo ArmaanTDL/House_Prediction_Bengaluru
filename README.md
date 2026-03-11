@@ -1,30 +1,73 @@
-# House Prediction
-This repo tackles the first round of [Zillow’s Home Value Prediction Competition](https://www.kaggle.com/c/zillow-prize-1#description), which challenges competitors to predict the log error between Zestimate and the actual sale price of houses.  And the submissions are evaluated based on Mean Absolute Error between the predicted log error and the actual log error. The competition was hosted from May 2017 to October 2017 on [Kaggle](https://www.kaggle.com), and the final private leaderboard was revealed after the evaluation period ended in January 2018.
+# 🏠 Bengaluru House Price Prediction
 
-The score of the stacked model in this repo would have ranked in the top-100 and qualified for the private second round, which involves building a home valuation algorithm from ground up.
+A comprehensive end-to-end Machine Learning project to predict residential property prices in Bengaluru, India. This application features a robust prediction engine powered by LightGBM and CatBoost, integrated into a clean and intuitive Flask-based web interface.
 
-**Author**: Junjie Dong (junjied@stanford.edu)
+![App Preview](screenshots/app_preview.png)
 
-# Files
-- `explanatory.ipynb` performs basic explanatory data analysis. The analysis is by no means comprehensive, since most ad-hoc data analysis were performed while extracting features and building models.
-- `feature_extraction.ipynb` cleans up the raw data, unifies data types and the representations of missing values, and extracts various kinds of features (eg. interaction features, region-based aggregate features). The features are saved to hdf5 files that can be easily loaded by other notebooks for modeling.
-- `model_lgb.ipynb` builds [LightGBM](https://github.com/Microsoft/LightGBM) models on top of the extracted features.
-- `model_catboost.ipynb` builds [CatBoost](https://github.com/catboost/catboost) models (both single model and ensemble model) on top of the extracted features.
-- `stack.py` performs simple stacking by taking a linear combination of the predictions from LightGBM and CatBoost.
-- `src/data_proc.py` includes several helper methods for data cleaning and feature extraction
+## 🌟 Key Features
 
-# Models
-Both the LightGBM and CatBoost models are mostly tuned based on offline cross validation, with no public leaderboard probing/overfitting. The weight for the final linear stacking is chosen based on public leaderboard scores. Outliers in the offline training and validation sets were carefully handled so that the offline validation method is as reliable as possible.
+- **High-Accuracy ML Engine**: Utilizes an ensemble of LightGBM and CatBoost models for precise price estimation.
+- **Interactive Web Interface**: A modern, responsive UI built with Flask, allowing users to input property details easily.
+- **Detailed Data Analysis**: Includes exploratory data analysis (EDA) and sophisticated feature engineering blocks.
+- **Dynamic Predictions**: Real-time price calculation based on location, area type, BHK, and square footage.
+- **Smart Formatting**: Automatically displays prices in appropriate units (Lakhs/Crores) based on the Indian numbering system.
 
-The following table outlines the chosen models' performance on the hidden private test set.
+## 🛠️ Project Structure
 
-| Model | Private Leaderboard Score | Private Leaderboard Ranking | Percentile (Top) |
-| :---: | :---:| :---: | :---: |
-| LightGBM (single) | 0.0752026 | 332 / 3779 | 8.8% |
-| CatBoost (single) | 0.0751456 | 250 / 3779 | 6.6% |
-| CatBoost (ensemble x8) | 0.0750750 | 147 / 3779 | 3.9% |
-| **Stack (LightGBM + CatBoost)** | **0.0750213** | **95 / 3779** | **2.5%** |
+The repository is organized as follows:
 
-For this dataset, CatBoost with its default hyperparameters gives very strong performance, and the model required almost no hyperparameter tuning. In comparison, LightGBM required much more hyperparameter tuning to achieve good performance.
+- `Bengaluru-House-Price-Prediction/`: Core application folder containing the trained model and UI templates.
+  - `app.py`: Flask application for serving predictions.
+  - `bengaluru_model.pkl`: The serialized machine learning model.
+  - `templates/`: HTML templates for the frontend.
+- `explanatory.ipynb`: Notebook containing Exploratory Data Analysis.
+- `feature_extraction.py`: script for cleaning data and extracting premium features.
+- `requirements.txt`: List of Python dependencies.
+- `screenshots/`: Visual assets and application previews.
 
-Also, it turns out that ensembling and stacking are essential to climbing up the leaderboard in this competition. And I believe there is still some room for improvement just by tuning the LightGBM hyperparameters and switching to a better stacking method (eg. train a meta-model on top of the base models' predictions on a hold-out set).
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Python 3.8 or higher
+- pip (Python package installer)
+
+### Installation
+
+1. **Clone the repository**:
+   ```bash
+   git clone <repository-url>
+   cd House_Prediction
+   ```
+
+2. **Set up a virtual environment (recommended)**:
+   ```bash
+   python -m venv venv
+   source venv/bin/python3  # On Mac/Linux
+   ```
+
+3. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+### Running the Application
+
+To launch the web interface, navigate to the core application directory and run the Flask server:
+
+```bash
+cd Bengaluru-House-Price-Prediction
+python app.py
+```
+
+The application will be available at `http://localhost:5002`.
+
+## 📊 Methodology
+
+1. **Data Cleaning**: Handled missing values, outliers, and inconsistent entries in the Bengaluru housing dataset.
+2. **Feature Engineering**: Created interaction features and region-based aggregate features to improve model performance.
+3. **Model Training**: Trained and tuned LightGBM and CatBoost models using offline cross-validation.
+4. **Ensembling**: Implemented a stacking method to combine the strengths of multiple models, ensuring robust predictions across different property types.
+
+---
+*Created with focus on performance and usability.*
