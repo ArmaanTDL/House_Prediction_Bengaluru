@@ -1,0 +1,13 @@
+numpy
+pandas
+lightgbm
+catboost
+scikit-learn
+matplotlib
+seaborn
+h5py
+tables
+scipy
+ipykernel
+nbconvert
+flask

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bengaluru House Price Prediction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-light: #f8fafc;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 1rem;
+            padding: 2.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: var(--text-muted);
+        }
+
+        select, input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .btn-predict {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+            margin-top: 1rem;
+        }
+
+        .btn-predict:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-predict:active {
+            transform: scale(0.99);
+        }
+
+        #result-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .result-card {
+            background: #f1f5f9;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .price-display {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #059669;
+            margin: 1rem 0;
+        }
+
+        .details-summary {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 1rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Bengaluru House Price Prediction</h1>
+            <p>Enter the property details below to estimate the price of a house using our trained machine learning model.</p>
+        </header>
+
+        <div class="card">
+            <form id="prediction-form">
+                <div class="form-grid">
+                    <div class="form-group full-width">
+                        <label for="location">Location</label>
+                        <select name="location" id="location" required>
+                            <option value="" disabled selected>Select Location</option>
+                            {% for loc in locations %}
+                            <option value="{{ loc }}">{{ loc }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="area_type">Area Type</label>
+                        <select name="area_type" id="area_type" required>
+                            <option value="" disabled selected>Select Area Type</option>
+                            {% for area in area_types %}
+                            <option value="{{ area }}">{{ area }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="total_sqft">Total Square Feet</label>
+                        <input type="number" name="total_sqft" id="total_sqft" placeholder="e.g. 1500" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="super_builtup">Super built-up Area (optional)</label>
+                        <input type="number" name="super_builtup" id="super_builtup" placeholder="Sqft">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="builtup">Built-up Area (optional)</label>
+                        <input type="number" name="builtup" id="builtup" placeholder="Sqft">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="plot_area">Plot Area (optional)</label>
+                        <input type="number" name="plot_area" id="plot_area" placeholder="Sqft">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bhk">BHK</label>
+                        <input type="number" name="bhk" id="bhk" placeholder="Number of bedrooms" min="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bath">Bathrooms</label>
+                        <input type="number" name="bath" id="bath" placeholder="Number of bathrooms" min="1" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="balcony">Balcony</label>
+                        <input type="number" name="balcony" id="balcony" placeholder="Number of balconies" min="0" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-predict">Predict Price</button>
+            </form>
+
+            <div id="result-section">
+                <div class="result-card">
+                    <h3>Estimated House Price</h3>
+                    <div class="price-display" id="predicted-price">--</div>
+                    <div class="details-summary" id="details-summary"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('prediction-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const btn = e.target.querySelector('.btn-predict');
+            btn.disabled = true;
+            btn.innerText = 'Calculating...';
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('result-section').style.display = 'block';
+                    document.getElementById('predicted-price').innerText = data.estimated_price;
+                    
+                    const details = data.details;
+                    document.getElementById('details-summary').innerHTML = `
+                        <strong>Location:</strong> ${details.Location} | 
+                        <strong>BHK:</strong> ${details.BHK} | 
+                        <strong>Sqft:</strong> ${details['Total Sqft']}
+                    `;
+                    
+                    // Smooth scroll to result
+                    document.getElementById('result-section').scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    alert('Error: ' + data.error);
+                }
+            } catch (err) {
+                alert('Connection Error. Please try again.');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Predict Price';
+            }
+        });
+
+        // Sync Total Sqft if components are entered
+        const components = ['super_builtup', 'builtup', 'plot_area'];
+        components.forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                let sum = 0;
+                components.forEach(comp => {
+                    const val = parseFloat(document.getElementById(comp).value) || 0;
+                    sum += val;
+                });
+                if (sum > 0) {
+                    document.getElementById('total_sqft').value = sum;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
